@@ -1,0 +1,16 @@
+'''Make a program in Python using the for statement that prints the first nth prime numbers, where the user enters the number n.'''
+n = input("Please enter a number n: ")
+print("2")
+n = int(n)
+testNumber = 3
+countPrime = 0
+while countPrime < n - 1:
+    isPrime = True
+    for i in range(2, testNumber):
+        if(testNumber % i == 0):
+            isPrime = False
+            break
+    if isPrime:
+        countPrime += 1
+        print(testNumber)
+    testNumber += 1
