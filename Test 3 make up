@@ -1,0 +1,108 @@
+import time
+import signal
+
+def vanilla():
+    numOfBalls = input("Please select 1 or 2 balls: ")
+    if numOfBalls == "1":
+        priceOriginal = 40
+    if numOfBalls == "2":
+        priceOriginal = 70
+    elif numOfBalls == "CANCEL":
+        return main()
+
+    topping = input("Topping number (0~5): ")
+    if topping == "CANCEL":
+        return main()
+    else:
+        topping = int(topping)
+        priceTopping = topping
+
+    print(priceOriginal + priceTopping)
+        
+
+def chocolate():
+    numOfBalls = input("Please select 1 or 2 balls: ")
+    if numOfBalls == "1":
+        priceOriginal = 45
+    if numOfBalls == "2":
+        priceOriginal = 75
+    elif numOfBalls == "CANCEL":
+        return main()
+
+    topping = input("Topping number (0~5): ")
+    if topping == "CANCEL":
+        return main()
+    else:
+        topping = int(topping)
+        priceTopping = topping
+
+    print(priceOriginal + priceTopping)
+        
+        
+def strawberry():
+    numOfBalls = input("Please select 1 or 2 balls: ")
+    if numOfBalls == "Small":
+        priceOriginal = 50
+    if numOfBalls == "Big":
+        priceOriginal = 80
+    elif numOfBalls == "CANCEL":
+        return main()
+
+    topping = input("Topping number (0~5): ")
+    if topping == "CANCEL":
+        return main()
+    else:
+        topping = int(topping)
+        priceTopping = topping
+        
+    print(priceOriginal + priceTopping)
+
+
+def main():
+    while "CANCEL":
+        menu = print("Buttons in the machine     Price 1 ball     Price 2 balls     Time required for preparation                         "     
+                     "1. Vanilla ice-cream            40NT            70NT               5s                                              "
+                     "2. Chocolate ice-cream          45NT            75NT               6s                                              "
+                     "3. Strawberry ice-cream         50NT            80NT               7s                                                "
+                     "Topping (0~5)               1NT per topping                                                                          "
+                     "                                                                                                                  ")
+        typeOfIcecream = input("Please select ice-cream flavor: ")
+
+        Vanilla = "Vanilla"
+        Chocolate = "Chocolate"
+        Strawberry = "Strawberry"
+
+        if typeOfIcecream == "Vanilla":
+            vanilla()
+            seconds = 5
+
+        if typeOfIcecream == "Chocolate":
+            chocolate()
+            seconds = 6
+
+        if typeOfIcecream == "Strawberry":
+            strawberry()
+            seconds = 7
+
+        elif typeOfIcecream == "CANCEL":
+            continue
+
+
+        sin= input("Press START if paid money: ")
+
+        signal.alarm(10)
+        signal.alarm(0)
+
+        if sin == "START":
+            print("Time needed: " , time , "seconds")
+            countDown = seconds
+            while countDown > 0:
+                time.sleep(1)
+                print(countDown)
+                countDown -=1
+            if countDown == 0:
+                print("Ready")
+                break
+        else:
+            continue
+main()
