@@ -33,32 +33,35 @@ def distance(beam_x1, brick_x1, x, beam_y1, brick_y1, y):
 
 # find the distance on the graph of the points, check closer to which center
 
-
+beam = 0
+brick = 0
 for x, y in legos:
     beam_x1 = 7
     beam_y1 = 4
     brick_x1 = 3
     brick_y1 = 5
 
+    db, dbr = distance(beam_x1, brick_x1, x, beam_y1, brick_y1, y)
 
-    distance_beam_x = x - beam_x1
-    distance_beam_y = y - beam_y1
+    # distance_beam_x = x - beam_x1
+    # distance_beam_y = y - beam_y1
+    #
+    # distance_brick_x = x - brick_x1
+    # distance_brick_y = y - brick_y1
+    #
+    # distance_beam = (beam_x1, x, beam_y1, y)
+    # distance_brick = (brick_x1, x, brick_y1, y)
+    #
+    #
 
-    distance_brick_x = x - brick_x1
-    distance_brick_y = y - brick_y1
-
-    distance_beam = (beam_x1, x, beam_y1, y)
-    distance_brick = (brick_x1, x, brick_y1, y)
-
-    beam = 0
-    brick = 0
-
-    if distance_beam > distance_brick:
+    if db> dbr:
         beam += 1
+        plt.scatter(x,y,color='red')
+
     else:
         brick += 1
+        plt.scatter(x,y,color='blue')
 
-    print(beam)
-    print(brick)
 
-distance(beam_x1, brick_x1, x, beam_y1, brick_y1, y)
+print(beam)
+print(brick)
