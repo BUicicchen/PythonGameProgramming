@@ -9,7 +9,7 @@ print(type(text))
 #print the following 100 words of the word searched
 seedword = 'rikki-tikki'
 print(seedword)
-for x in range(101):
+for x in range(100):
     words, freq = ml.findNextWord(seedword, text)
     prob = ml.probOccurrence(freq)
     #print(words, freq)
