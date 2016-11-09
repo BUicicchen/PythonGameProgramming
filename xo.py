@@ -48,5 +48,15 @@ def checkLine(grid):
     return continueGame
 
 '''
-def MINIMAX_AI():
+def children(grid):
+    children = 0
+    if grid.getvalue == " ":
+        children + 1
+    print(children)
+'''
+'''
+def MINIMAX_AI(grid):
+    data = {grid:{1:}}
+    score = 0
+    'o' = -10
 '''
