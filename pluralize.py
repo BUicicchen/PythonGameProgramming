@@ -2,6 +2,26 @@ pluralize = {'chair':'', 'book':'', 'family':'', 'potato':'', 'witch':'', 'candy
 pluralList = []
 
 def plurals(chairs, books, families, potatoes, witches, candies, women, children, fungi, sheep, loaves, horses, deer, feet, heroes, babies):
+    #this function stores the pluralized form of the nouns into the value in dictionary
+    '''
+    :param chairs: plural form of chair
+    :param books: plural form of book
+    :param families: plural form of family
+    :param potatoes: plural form of potato
+    :param witches: plural form of witch
+    :param candies: plural form of candy
+    :param women: plural form of woman
+    :param children: plural form of child
+    :param fungi: plural form of fungus
+    :param sheep: plural form of sheep
+    :param loaves: plural form of loaf
+    :param horses: plural form of horse
+    :param deer: plural form of deer
+    :param feet: plural form of foot
+    :param heroes: plural form of hero
+    :param babies: plural form of baby
+    :return: pluralList
+    '''
     pluralize["chair"] = chairs
     pluralize["book"] = books
     pluralize["family"] = families
@@ -22,6 +42,11 @@ def plurals(chairs, books, families, potatoes, witches, candies, women, children
     return pluralList
 
 def displayPluralList(pluralList):
+    #this function displays the plural form of nouns
+    '''
+    :param pluralList: the list of pluralized nouns
+    :return: None
+    '''
     for i in pluralList:
         print('The plural form of chair is ' + i["chair"] + '.')
         print('The plural form of book is ' + i["book"] + '.')
