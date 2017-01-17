@@ -1,118 +1,165 @@
+'''This program converts Google Classroom information into format on PowerSchool
+One file is created for each assignment'''
+
+import datetime
 import csv
 
-powerschoolDic = {'Teacher Name:':'', 'Section:':'Python', 'Assignment Name':'', 'Due Date:':'', 'Points Possible':'10', 'Extra Points:':'0', 'Score Type:':'Points', 'Student ID':'', 'Student Name:':'', 'Points':''}
+powerschoolDic = {'Teacher Name:':'', 'Section:':'', 'Assignment Name':'', 'Due Date:':'', 'Points Possible:':'', 'Extra Points:':'', 'Score Type:':'', 'Student ID':'', 'Student Name':'', 'Points':''}
 
 '''GOOGLE CLASSROOM''' #---------------------------------------------------------
 
-#open the file
+#open the Google Classroom file
 gcFile = open('GoogleActivities.csv')
 gcData = csv.reader(gcFile)
 #show all the rows in the file
 gcdata = []
+
 for i, row in enumerate(gcData):
     gcdata.append(row)
     print('{}- '.format(i+1), end='')
     print(row)
 
+
 # number of activities, assignments
 gcassignmentList = []
-gcNumberOfAssignments = len(gcdata[0]) - 3 # row 1, minus first 3 columes
-for i, assignment in enumerate(gcdata[0]):
-    if i >= 3:
-        powerschoolDic['Assignment Name'] = gcassignmentList.append(assignment)
+gcNumberOfStudents = len(gcdata[0]) - 3 # colume 1, minus first 3 rows
+for n, assignment in enumerate(gcdata[0]):
+    if n >= 3:
+        gcassignmentList.append(assignment)
+powerschoolDic['Assignment Name'] = gcassignmentList
 
-
-# due date ??????????????????
+# Google Classroom date
 gcdateList = []
-for colume, date in enumerate(gcdata[1]):
-    if colume >= 3:
-        from datetime import datetime
-        date.strptime(date, '%d-%b-%y')
-        gcdateList.append(date)
+dateString = ''
+week = ['Mon', 'Tues', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+for n, date in enumerate(gcdata[1]):
+    if n >= 3:
+        for mon in range(len(month)):
+            if date[3:6] == month[mon]: # if it is characters 4~6
+                numberOfMonth = mon + 1
+        day = week[datetime.datetime(int('20' + date[-2:]), numberOfMonth, int(date[:2])).weekday()]
+        dateString += day + ' ' + date[3:6] + ' ' + date[:2] + ' ' + '00:00:00 CST ' + '20' + date[-2:] # ps format
+        dateString = ''
+        gcdateList.append(dateString)
 powerschoolDic['Due Date:'] = gcdateList
 
-
-
-psFormat = "EEE MMM dd HH:mm:ss z yyyy"
-gcFormat = "dd-mm-yy"
+#date.strptime(date, '%d-%b-%y')
+#psFormat = "EEE MMM dd HH:mm:ss z yyyy"
+#gcFormat = "dd-mm-yy"
 #24-Aug-16
 #Thu Dec 01 00:00:00 CST 2016
 
-
-# student names
+# Google classroom student names
 gcnameList = []
 for i, name in enumerate(gcdata):
     if i >= 3:
-        powerschoolDic['Student Name'] = gcnameList.append(name[1] + ', ' + row[0])
+        gcnameList.append(name[1] + ', ' + name[0])
+powerschoolDic['Student Name'] = gcnameList
 
-
-# points
+# Google Classroom points
 gcscoreList = []
-for assignment in range(len(gcscoreList)):
-    for i, points in enumerate(gcdata[2,8])-3:
+for assignment in range(len(gcnameList)):
+    for i, points in enumerate(gcdata[gcNumberOfStudents+3]):
         if i >= 3:
-            powerschoolDic['Points'] = gcscoreList.append(float(points*0.1))
-
-#close file
+            gcscoreList.append(int(points)/10)
+powerschoolDic['Points'] = gcscoreList
+#close the Google Classroom file
 gcFile.close()
-
-
-
-
-
 
 
 
 '''POWERSCHOOL''' #---------------------------------------------------------
 
-# open the file
+# open the PowerSchool file
 psFile = open('PowerSchool Template.csv')
 psData = csv.reader(psFile)
 #show all the rows in the file
 psdata = []
+
 for i, row in enumerate(psData):
     psdata.append(row)
     print('{}- '.format(i+1), end='')
     print(row)
 
 
-# student ID
+# PowerSchool student ID
 psstudentIDList = []
 for i, studentID in enumerate(psdata):
     if i >= 9:
-        for colume, id in enumerate(psdata[i]):
-            powerschoolDic['Student ID'] = psstudentIDList.append(id)
-
-#close file
+        for n, id in enumerate(psdata[i]):
+            if n == 0:
+                psstudentIDList.append(id)
+powerschoolDic['Student ID'] = psstudentIDList
+#close the PowerSchool file
 psFile.close()
 
 
-def converter(gcNumberOfAssignments):
-    for assignment in range(gcNumberOfAssignments):
+
+def newFiles(n):
+    # create new files according to how many assignments
+    '''
+    :param n: int, number of assignments
+    :return: name of files
+    '''
+    psFileName = 'Assignment '
+    psFileName += str(n) + '.csv'
+    return psFileName
+
+def converter(n):
+    # using information from Google Classroom to convert into PowerSchool format
+    # write in the new .csv files created
+    '''
+    :param n: int, number of assignments
+    :return: None
+    '''
+
+    for i in range(n):
 
         # writer object responsible for converting the user’s data into delimited strings on the given file-like object
-        with open('Assignment', str(gcNumberOfAssignments),'.csv', 'w+') as psFiles:
+        psFiles = open(newFiles(i+1), 'w')
+        pswriter = csv.writer(psFiles, delimiter=',')
 
-            pswriter = csv.writer(psFiles, delimiter=',')
 
-            pswriter.writerow(['Teacher Name:'] + psdata[0][1])
-            pswriter.writerow(['Section:'] + psdata[1][1])
+        # Teacher name
+        powerschoolDic['Teacher Name:'] = list(psdata[0])
+        pswriter.writerow(powerschoolDic['Teacher Name:'])
 
-            # PUT DIFFERENT ASSIGNMENTS????????????
-            pswriter.writerow(['Assignment Name:'] + gcassignmentList[0,3])
+        # Section
+        powerschoolDic['Section:'] = list(psdata[1])
+        pswriter.writerow(powerschoolDic['Section:'])
 
-            # DUE DATE ???????????????????????????
-            pswriter.writerow(['Due Date:'] + ___________)
+        # Assignments
+        for n, assignment in enumerate(powerschoolDic['Assignment Name']):
+            if n == i:
+                pswriter.writerow(['Assignment Name:'] + [assignment])
 
-            pswriter.writerow(['Points Possible:'] + psdata[1][4])
-            pswriter.writerow(['Extra Points:'] + psdata[1][5])
-            pswriter.writerow(['Score Type:'] + psdata[1][6])
-            pswriter.writerow('')
-            pswriter.writerow(['Student ID'] + psdata[1][8] + psdata[2][8])
+        # Due date
+        for num, d in enumerate(powerschoolDic['Due Date:']):
+            if num == i:
+                pswriter.writerow(['Due Date:'] + [d])
 
-            for students in range(len(powerschoolDic['Student ID'])):
-                pswriter.writerow([powerschoolDic['Student ID'][students]] + [powerschoolDic['Student Name:'][students]] + [powerschoolDic['Points'][students * gcNumberOfAssignments + i]])
+        # Points possible
+        powerschoolDic['Points Possible:'] = psdata[4][1]
+        pswriter.writerow(['Points Possible:'] + [powerschoolDic['Points Possible:']])
 
-        # psFiles.close()
+        # Extra points
+        powerschoolDic['Extra Points:'] = psdata[5][1]
+        pswriter.writerow(['Extra Points:'] + [powerschoolDic['Extra Points:']])
 
-converter(gcNumberOfAssignments)
+        # Score type
+        powerschoolDic['Score Type:'] = psdata[6][1]
+        pswriter.writerow(['Score Type:'] + [powerschoolDic['Score Type:']])
+
+        # Blank line
+        pswriter.writerow([''])
+
+        # Student ID
+        pswriter.writerow(['Student ID'] + ['Student Name'] + ['Points'])
+
+        # Student IDs
+        for students in range(len(powerschoolDic['Student ID'])):
+            pswriter.writerow([powerschoolDic['Student ID'][students]] + [powerschoolDic['Student Name'][students]] + [powerschoolDic['Points'][(students * gcNumberOfStudents) + i]])
+
+
+converter(gcNumberOfStudents)
